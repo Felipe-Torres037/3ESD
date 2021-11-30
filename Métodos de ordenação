@@ -1,0 +1,222 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+
+void preencher_vetor(int vetor[], int n);
+void bubbleSort (int vetor[], int n);
+void quick_sort(int vetor[], int esquerda, int direita, double comp[]);
+void insertion_sort(int vetor[], int n);
+void selectionSort (int vetor[], int n);
+
+
+int main ()
+{
+	int sort_escolhido=0, n=0; 
+	double comp[2]; 
+//comp= vetor com comparações posição 0 e trocas posição 1, achei mais simples para funções recurssivas
+	printf("Selecione o metodo de ordenacao a ser testado:\n");
+	printf("\n 1) Bubble Sort \n 2)Selection Sort\n3)Insertion Sort \n4)Quick Sort\n 5) Sair do programa\n");
+	scanf("%d", &sort_escolhido);
+	printf("\nDefina o numero de elementos do vetor:\n");
+	scanf("%d", &n);
+	int vetor[n];
+	srand(time(NULL));
+	clock_t t;
+	clock_t hora_inicial = clock();
+	preencher_vetor(vetor, n);
+
+	do
+	{
+		if(sort_escolhido==0)
+		{
+			printf("\nSelecione o metodo de ordenacao a ser testado:\n");
+			printf("\n 1) Bubble Sort \n 2)Selection Sort\n 3)Insertion Sort \n 4)Quick Sort\n 5) Sair do programa\n");
+			scanf("%d", &sort_escolhido);
+			printf("\nDefina o numero de elementos do vetor:\n");
+			scanf("%d", &n);
+			srand(time(NULL));
+			clock_t hora_inicial = clock(); 
+			preencher_vetor(vetor, n);
+		}
+		if(sort_escolhido==1)
+			{
+			bubbleSort(vetor, n);
+			sort_escolhido=0;
+			clock_t hora_final = clock();
+			double tempo_gasto = ( (double) (hora_final - hora_inicial) ) / CLOCKS_PER_SEC;
+			printf("Tempo gasto durante o Bubble SORT: %.10f s\n", tempo_gasto);
+			}
+		else
+			{
+				if(sort_escolhido==2)
+					{
+					selectionSort(vetor, n);
+					clock_t hora_final = clock();
+					double tempo_gasto = ( (double) (hora_final - hora_inicial) ) / CLOCKS_PER_SEC;
+					printf("Tempo gasto durante o  Selection SORT: %.l0f s\n", tempo_gasto);
+					sort_escolhido=0;
+					}
+				else
+					{
+					if(sort_escolhido==3)
+						{
+						quick_sort(vetor, 0, n - 1, comp);
+						printf("\nTrocas: %.0f comparacoes: %.0f \n", comp[1], comp[0]);
+						clock_t hora_final = clock();
+						double tempo_gasto = ( (double) (hora_final - hora_inicial) ) / CLOCKS_PER_SEC;
+						printf("Tempo gasto durante o  Quick Sort: %.l0f s\n", tempo_gasto);
+						sort_escolhido=0;
+						}
+					else	
+						{
+						if(sort_escolhido==4)
+							{
+							insertion_sort(vetor, n);
+							clock_t hora_final = clock();
+							double tempo_gasto = ( (double) (hora_final - hora_inicial) ) / CLOCKS_PER_SEC;
+							printf("Tempo gasto durante o  Isertion Sort: %.l0f s\n", tempo_gasto);
+							sort_escolhido=0;
+							}
+						else
+						{
+							if(sort_escolhido==5)
+							{
+							printf("Finalizando programa");
+							}
+							else
+								{
+								 printf("\n	Comando invalido\n digite um valor valido para prosseguir\n");
+								}
+						
+							}
+						}
+					}
+			}	
+	}while (sort_escolhido != 5);
+	}
+
+void preencher_vetor(int vetor[], int n)
+{	
+	int i = 0;
+	for (; i < n; i++)
+  	{
+   	vetor[i]= rand() % n+1;
+    }
+}
+/*void limpar_vetor(int vetor[])
+{
+	memset(vetor, '\0', sizeof(vetor));
+}*/
+void bubbleSort (int vetor[], int n)
+{
+	int i, aux, continua, fim = n;
+	double comparab= 0, trocab= 0;
+    do
+    {
+        continua = 0;        
+        for (i = 0; i < fim - 1; i++)
+        {
+        	 comparab++;
+            if (vetor[i] > vetor[i + 1])
+            {
+            	trocab++;
+                aux = vetor[i];
+                vetor[i] = vetor[i + 1];
+                vetor[i + 1] = aux;
+				continua = i;
+				
+            }	
+        }
+        comparab++;
+		fim--; 
+    }while (continua != 0); 
+	printf("\nTrocas: %.0f comparacoes: %.0f \n", trocab, comparab);
+}
+
+void selectionSort (int vetor[], int n)
+{
+	int i, j, menor, troca;
+	double comparas=0, trocas=0;
+    for (i = 0; i < n-1; i++)
+    {
+    	menor = i;
+    	for (j = i+1; j < n; j++)
+    	{
+    		comparas++;
+    		if (vetor[j] < vetor[menor])
+    		{
+    			menor = j;
+			}
+		}
+		
+		if (i != menor)
+		{
+				troca = vetor[i];
+				trocas++;
+				vetor[i] = vetor[menor];
+				vetor[menor] = troca;
+		}
+	}
+	printf("\nTrocas: %.0f comparacoes: %.0f \n", trocas, comparas);
+}
+void quick_sort(int vetor[], int esquerda, int direita, double comp[]) 
+{
+    int i, j, x, y=0;
+    i = esquerda;
+    j = direita;
+    x = vetor[(esquerda + direita) / 2];
+     
+    while(i <= j) {
+        while(vetor[i] < x && i < direita) {
+            i++;
+            comp[0]++;
+        }
+        while(vetor[j] > x && j > esquerda) {
+            j--;
+            comp[0]++;
+        }
+        comp[0]++;
+        
+        if(i <= j) {
+        	comp[1]++;
+        	comp[1]++;
+            y = vetor[i];
+            vetor[i] = vetor[j];
+            vetor[j] = y;
+            i++;
+            j--;
+        }
+    }
+     
+    if(j > esquerda) {
+    	comp[0]++;
+    	comp[0]++;
+        quick_sort(vetor, esquerda, j, comp);
+    }
+    if(i < direita) 
+    {
+    	comp[0]++;
+    	comp[0]++;
+        quick_sort(vetor, i, direita, comp);
+    }
+}
+
+void insertion_sort(int vetor[], int n)
+{
+ int i, j, tmp;
+double compi, trocai;
+compi=trocai=0;
+ for(i = 1; i < n; i++)
+ {
+	
+  tmp = vetor[i];
+   compi++;
+  for(j = i-1; j >= 0 && tmp < vetor[j]; j--)
+  {
+	trocai++;
+    vetor[j+1] = vetor[j];
+  }
+   vetor[j+1] = tmp;
+}
+	return ; 
+}
